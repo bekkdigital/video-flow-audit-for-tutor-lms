@@ -60,19 +60,20 @@ add_action(
  * Bust Core's scan caches when a course / lesson / topic changes, so the
  * audit view never shows a stale list. Scoped to the post types that can
  * hold a video.
+ *
+ * @param int $post_id Saved / deleted post ID.
  */
-foreach ( array( 'save_post', 'deleted_post', 'trashed_post', 'untrashed_post' ) as $hook ) {
-	add_action(
-		$hook,
-		function ( $post_id ) {
-			if ( ! function_exists( 'vfaudit_core_invalidate_course_videos_cache' ) ) {
-				return;
-			}
-			if ( ! in_array( get_post_type( (int) $post_id ), array( 'courses', 'lesson', 'topics' ), true ) ) {
-				return;
-			}
-			vfaudit_core_invalidate_course_videos_cache( (int) $post_id );
-			vfaudit_core_invalidate_course_counts_cache();
-		}
-	);
+function vfaudit_bust_scan_caches( $post_id ): void {
+	if ( ! function_exists( 'vfaudit_core_invalidate_course_videos_cache' ) ) {
+		return;
+	}
+	if ( ! in_array( get_post_type( (int) $post_id ), array( 'courses', 'lesson', 'topics' ), true ) ) {
+		return;
+	}
+	vfaudit_core_invalidate_course_videos_cache( (int) $post_id );
+	vfaudit_core_invalidate_course_counts_cache();
 }
+add_action( 'save_post', 'vfaudit_bust_scan_caches' );
+add_action( 'deleted_post', 'vfaudit_bust_scan_caches' );
+add_action( 'trashed_post', 'vfaudit_bust_scan_caches' );
+add_action( 'untrashed_post', 'vfaudit_bust_scan_caches' );

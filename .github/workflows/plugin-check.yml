@@ -22,4 +22,3 @@ jobs:
         uses: wordpress/plugin-check-action@v1
         with:
           build-dir: build/video-flow-audit-for-tutor-lms
-          exclude-directories: lib
