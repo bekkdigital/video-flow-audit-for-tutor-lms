@@ -16,8 +16,8 @@ global $wpdb;
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- one-off transient sweep on uninstall.
 $wpdb->query(
 	"DELETE FROM {$wpdb->options}
-	 WHERE option_name LIKE '\_transient\_vf_course_videos\_%'
-	    OR option_name LIKE '\_transient\_timeout\_vf_course_videos\_%'
-	    OR option_name LIKE '\_transient\_vf_course_counts\_%'
-	    OR option_name LIKE '\_transient\_timeout\_vf_course_counts\_%'"
+	 WHERE option_name LIKE '\_transient\_vfaudit_course_videos\_%'
+	    OR option_name LIKE '\_transient\_timeout\_vfaudit_course_videos\_%'
+	    OR option_name LIKE '\_transient\_vfaudit_course_counts\_%'
+	    OR option_name LIKE '\_transient\_timeout\_vfaudit_course_counts\_%'"
 );

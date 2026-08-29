@@ -50,7 +50,7 @@ if ( ! function_exists( 'vfaudit_core_get_courses_with_video_counts' ) ) {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- targeted transient cleanup, no WP API for wildcard transient delete.
 		$wpdb->query(
-			"DELETE FROM {$wpdb->options} WHERE option_name LIKE '\_transient\_vf_course_counts\_%' OR option_name LIKE '\_transient\_timeout\_vf_course_counts\_%'"
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE '\_transient\_vfaudit_course_counts\_%' OR option_name LIKE '\_transient\_timeout\_vfaudit_course_counts\_%'"
 		);
 	}
 }
