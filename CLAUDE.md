@@ -64,4 +64,4 @@ plugin too and confirm: no fatal, audit menu gone, dormant notice shown.
   reads it).
 - First release: create the wp.org plugin (slug
   `video-flow-audit-for-tutor-lms`), add `SVN_USERNAME` / `SVN_PASSWORD`
-  secrets, drop assets in `.wordpress-org/`, then `git tag v1.0.0`.
+  secrets, drop assets in `.wordpress-org/`, then `git tag 1.0.0 && git push --tags` (no leading `v` — the SVN tag must match `Stable tag`).

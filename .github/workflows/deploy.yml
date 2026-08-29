@@ -1,8 +1,18 @@
 name: Deploy to wordpress.org
+
 on:
   push:
     tags:
-      - 'v*'
+      # Version-number tags only, matching `Stable tag` in readme.txt.
+      # Tag as `1.0.0` (no leading "v") so the SVN tag matches.
+      - '[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+'
+  # Manual re-sync of the store assets in .wordpress-org/ between releases.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -11,15 +21,18 @@ jobs:
 
       # The runtime dependency (Video Flow Core) is committed under lib/, so
       # there is no build step — the checkout is the package. .distignore
-      # controls what ships.
-      - name: WordPress.org plugin deploy
+      # controls what ships to SVN trunk/tag.
+      - name: Deploy to wordpress.org SVN
+        if: startsWith(github.ref, 'refs/tags/')
         uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          generate-zip: true
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SLUG: video-flow-audit-for-tutor-lms
 
-      - name: Attach ZIP to the GitHub release
+      - name: Sync store assets (icon / banner / screenshots)
         uses: 10up/action-wordpress-plugin-asset-update@stable
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}

@@ -1,8 +1,9 @@
 # wordpress.org assets
 
-Drop the store assets here before the first `v*` tag — the deploy workflow
-(`10up/action-wordpress-plugin-asset-update`) syncs this folder to the SVN
-`assets/` directory.
+Drop the store assets here before the first release tag — the deploy
+workflow (`10up/action-wordpress-plugin-asset-update`) syncs this folder to
+the SVN `assets/` directory on every version tag, and on a manual
+`workflow_dispatch` run in between releases.
 
 Required:
 
