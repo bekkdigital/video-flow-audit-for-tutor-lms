@@ -1,0 +1,7 @@
+# Composer dev tooling only — the runtime dependency (Video Flow Core) is
+# bundled in lib/ and committed. Refresh it with `composer run sync-core`.
+/vendor/
+/composer.lock
+/composer.phar
+/.phpunit.result.cache
+/dist/

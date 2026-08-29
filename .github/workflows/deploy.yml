@@ -1,0 +1,27 @@
+name: Deploy to wordpress.org
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The runtime dependency (Video Flow Core) is committed under lib/, so
+      # there is no build step — the checkout is the package. .distignore
+      # controls what ships.
+      - name: WordPress.org plugin deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: video-flow-audit-for-tutor-lms
+
+      - name: Attach ZIP to the GitHub release
+        uses: 10up/action-wordpress-plugin-asset-update@stable
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: video-flow-audit-for-tutor-lms

@@ -1,0 +1,141 @@
+.vfaudit-wrap {
+	max-width: 1200px;
+}
+
+.vfaudit-lead {
+	margin: 4px 0 18px;
+	color: #50575e;
+	font-size: 13px;
+}
+
+.vfaudit-filter {
+	margin: 0 0 16px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.vfaudit-filter label {
+	font-weight: 600;
+	font-size: 13px;
+}
+
+.vfaudit-table {
+	margin-bottom: 24px;
+}
+
+.vfaudit-table .vfaudit-num {
+	text-align: right;
+	white-space: nowrap;
+}
+
+.vfaudit-detail code {
+	font-size: 11px;
+	background: transparent;
+	padding: 0;
+}
+
+.vfaudit-id .vfaudit-copy {
+	margin-left: 6px;
+	font-size: 11px;
+}
+
+.vfaudit-back {
+	text-decoration: none;
+}
+
+.vfaudit-course-name {
+	margin: 6px 0 4px;
+}
+
+.vfaudit-meta {
+	margin: 0 0 18px;
+	color: #50575e;
+	font-size: 13px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.vfaudit-tag,
+.vfaudit-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1.6;
+}
+
+.vfaudit-tag-vimeo,
+.vfaudit-badge-vimeo {
+	background: #e7f0ff;
+	color: #1a56c4;
+}
+
+.vfaudit-tag-youtube,
+.vfaudit-badge-youtube {
+	background: #fde9e9;
+	color: #c4302b;
+}
+
+.vfaudit-tag-bunny,
+.vfaudit-badge-bunny {
+	background: #fff4e5;
+	color: #b3630f;
+}
+
+.vfaudit-tag-local,
+.vfaudit-badge-local {
+	background: #eef2f5;
+	color: #50575e;
+}
+
+.vfaudit-note-orphan {
+	color: #b06000;
+	font-weight: 600;
+}
+
+.vfaudit-empty {
+	padding: 36px 20px;
+	text-align: center;
+	color: #646970;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+}
+
+.vfaudit-upgrade {
+	margin: 32px 0 8px;
+	padding: 18px 22px;
+	border: 1px solid #dcdcde;
+	border-left: 4px solid #2271b1;
+	border-radius: 4px;
+	background: #fff;
+	max-width: 720px;
+}
+
+.vfaudit-upgrade h2 {
+	margin: 0 0 8px;
+	font-size: 15px;
+}
+
+.vfaudit-upgrade p {
+	margin: 0 0 12px;
+	font-size: 13px;
+	color: #50575e;
+}
+
+.vfaudit-upgrade-list {
+	margin: 0 0 14px;
+	padding-left: 20px;
+	font-size: 13px;
+	line-height: 1.7;
+	color: #50575e;
+	list-style: disc;
+}
+
+.vfaudit-upgrade-list li {
+	margin: 2px 0;
+}

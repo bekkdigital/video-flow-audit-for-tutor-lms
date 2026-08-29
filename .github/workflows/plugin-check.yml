@@ -1,0 +1,25 @@
+name: Plugin Check
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  plugin-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - name: Build a clean package
+        run: |
+          bash build.sh
+          mkdir -p build
+          unzip -q ../dist/video-flow-audit-for-tutor-lms-*.zip -d build
+      - name: Run WordPress Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: build/video-flow-audit-for-tutor-lms
+          exclude-directories: lib

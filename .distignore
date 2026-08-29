@@ -1,0 +1,29 @@
+# Files and folders that must NOT ship in the wordpress.org package.
+# Keep this in sync with build.sh (build.sh reads this file).
+
+/.git
+/.github
+/.wordpress-org
+/.vscode
+/bin
+/tests
+/dist
+/node_modules
+/vendor
+
+/.gitignore
+/.distignore
+/.editorconfig
+/build.sh
+/composer.json
+/composer.lock
+/composer.phar
+/phpcs.xml.dist
+/phpstan.neon.dist
+/phpstan-baseline.neon
+/.phpunit.result.cache
+/CLAUDE.md
+/AGENTS.md
+/README.md
+
+/lib/video-flow-core/README.md

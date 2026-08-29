@@ -1,0 +1,17 @@
+parameters:
+    level: 5
+    paths:
+        - video-flow-audit-for-tutor-lms.php
+        - includes
+        - uninstall.php
+    excludePaths:
+        - vendor/*
+        - dist/*
+    scanFiles:
+        - lib/video-flow-core/src/adapter.php
+        - lib/video-flow-core/src/scanner.php
+        - lib/video-flow-core/src/courses.php
+        - lib/video-flow-core/src/usages.php
+        - lib/video-flow-core/src/format.php
+    bootstrapFiles:
+        - tests/phpstan-bootstrap.php

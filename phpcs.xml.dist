@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<ruleset name="Video Flow Audit for Tutor LMS">
+    <description>WordPress Coding Standards for Video Flow Audit for Tutor LMS</description>
+    <file>.</file>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/dist/*</exclude-pattern>
+    <!-- Bundled third-party library; linted in its own repository. -->
+    <exclude-pattern>*/lib/*</exclude-pattern>
+    <arg value="sp"/>
+    <arg name="basepath" value="."/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="8"/>
+    <rule ref="WordPress">
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+        <exclude name="Universal.Operators.DisallowShortTernary.Found"/>
+        <exclude name="Squiz.Commenting.FunctionComment"/>
+        <exclude name="Squiz.Commenting.FileComment"/>
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+    </rule>
+    <config name="testVersion" value="8.0-"/>
+    <config name="minimum_wp_version" value="6.5"/>
+    <rule ref="PHPCompatibilityWP"/>
+    <rule ref="Generic.Commenting.Todo"/>
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="video-flow-audit-for-tutor-lms"/>
+            </property>
+        </properties>
+    </rule>
+</ruleset>
