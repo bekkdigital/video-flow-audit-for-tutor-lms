@@ -1,16 +1,18 @@
 <?php
-/*
-Plugin Name: Video Flow Audit for Tutor LMS
-Description: See every video in your Tutor LMS courses — Vimeo, YouTube, Bunny Stream, or self-hosted — in one place, grouped by course and lesson.
-Version: 1.0.0
-Requires at least: 6.5
-Requires PHP: 8.0
-Requires Plugins: tutor
-Author: Bekk Digital Studio
-Text Domain: video-flow-audit-for-tutor-lms
-License: GPL-2.0-or-later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
-*/
+/**
+ * Plugin Name:       Video Flow Audit for Tutor LMS
+ * Plugin URI:        https://wpvideoflow.com/video-flow-audit-for-tutor-lms/
+ * Description:       Audit Tutor LMS course videos and identify video configuration and usage issues.
+ * Version:           1.0.0
+ * Requires at least: 6.5
+ * Requires PHP:      8.0
+ * Author:            Bekk Digital Studio
+ * Author URI:        https://wpvideoflow.com/
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       video-flow-audit-for-tutor-lms
+ * Requires Plugins:  tutor
+ */
 
 defined( 'ABSPATH' ) || exit;
 
