@@ -65,3 +65,15 @@ composer run test      # PHPUnit (Brain\Monkey, no WordPress needed)
 composer run lint      # PHPCS (WordPress standard)
 composer run phpstan   # level 5
 ```
+
+## Changelog
+
+### 1.0.1
+- Hardening: scalar-check every post-meta value before a string/int cast, so
+  an injected serialized object cannot reach `__toString()`.
+- `vf_core_get_course_videos[_cached]()` now ignores IDs that are not a real
+  course post (prevents transient churn from a crafted `?course_id=`).
+- `vf_core_get_courses_with_video_counts()` ignores a non-existent `author_id`.
+
+### 1.0.0
+- Initial extraction from `video-flow-for-tutor-lms`.

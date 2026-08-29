@@ -17,14 +17,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       # The runtime dependency (Video Flow Core) is committed under lib/, so
       # there is no build step — the checkout is the package. .distignore
       # controls what ships to SVN trunk/tag.
       - name: Deploy to wordpress.org SVN
         if: startsWith(github.ref, 'refs/tags/')
-        uses: 10up/action-wordpress-plugin-deploy@stable
+        uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2 # v2.3.0
         with:
           generate-zip: true
         env:
@@ -33,7 +33,7 @@ jobs:
           SLUG: video-flow-audit-for-tutor-lms
 
       - name: Sync store assets (icon / banner / screenshots)
-        uses: 10up/action-wordpress-plugin-asset-update@stable
+        uses: 10up/action-wordpress-plugin-asset-update@2480306f6f693672726d08b5917ea114cb2825f7 # v2.2.0
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}

@@ -27,9 +27,10 @@ Created August 2026. See `/home/arild/.claude/plans/` for the build plan.
 ## Hard rules
 
 1. **Read-only. Always.** No Bunny/Vimeo/YouTube API calls, no writes to
-   lessons or meta, no migration. The whole wordpress.org pitch is "it
-   only looks". If a feature needs to write or call out, it belongs in the
-   paid plugin.
+   lessons or meta, no migration. The one exception is Core's own scan-cache
+   transients (`vfaudit_course_*`), set/cleared by the cached wrapper and the
+   `save_post` hooks. If a feature needs to write anything else or call out,
+   it belongs in the paid plugin.
 2. **No phone-home, no external HTTP, no self-hosted updater.**
    wordpress.org forbids it and `readme.txt` promises none.
 3. **One upgrade call-out, not a nag.** `vfaudit_render_upgrade_panel()`

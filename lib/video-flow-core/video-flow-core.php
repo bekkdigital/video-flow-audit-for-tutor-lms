@@ -75,4 +75,4 @@ if ( ! function_exists( 'vfaudit_core_register_package' ) ) {
 
 // This copy's version. Bump in lockstep with the composer.json "version" /
 // git tag whenever the package is released.
-vfaudit_core_register_package( '1.0.0', __DIR__ . '/src/bootstrap.php' );
+vfaudit_core_register_package( '1.0.1', __DIR__ . '/src/bootstrap.php' );

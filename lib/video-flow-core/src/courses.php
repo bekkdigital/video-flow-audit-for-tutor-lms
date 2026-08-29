@@ -21,6 +21,12 @@ if ( ! function_exists( 'vfaudit_core_get_courses_with_video_counts' ) ) {
 			return array();
 		}
 
+		// Only 0 (all) or a real user id — stops a CSRF'd ?author_id=<n> loop
+		// from writing a transient per bogus value.
+		if ( $author_id > 0 && ! get_userdata( $author_id ) ) {
+			return array();
+		}
+
 		$cache_key = 'vfaudit_course_counts_' . ( $author_id > 0 ? $author_id : 'all' );
 		$cached    = get_transient( $cache_key );
 		if ( false !== $cached ) {

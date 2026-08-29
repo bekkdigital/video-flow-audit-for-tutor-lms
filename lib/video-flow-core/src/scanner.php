@@ -13,10 +13,19 @@
  *   3. `_oembed_*` meta     — WordPress oEmbed cache
  *   4. `bunny_video_id` meta — videos this plugin family uploaded to Bunny
  *
- * This function is strictly READ-ONLY. It performs no HTTP calls and
- * writes nothing to the database. Plugins that can talk to Bunny (the
- * paid Video Flow plugin) enrich Bunny rows with live title / duration /
- * views / transcode status by hooking the `vfaudit_core_enrich_videos` filter.
+ * `vfaudit_core_get_course_videos()` itself performs no HTTP calls and writes
+ * nothing to the database. The cached wrapper `vfaudit_core_get_course_videos_cached()`
+ * stores one plugin-owned transient (`vfaudit_course_videos_<id>`, 5 min) and
+ * nothing else. Nothing here ever touches LMS content, post meta, or a
+ * video host. Plugins that can talk to Bunny (the paid Video Flow plugin)
+ * enrich Bunny rows with live title / duration / views / transcode status
+ * by hooking the `vfaudit_core_enrich_videos` filter.
+ *
+ * Untrusted-meta note: several fields read here (`_video`, `bunny_video_id`,
+ * `*_video_title`) live on posts a lower-privilege user may be able to
+ * edit. WordPress unserializes keyed meta on read, so every value that
+ * could later hit a string/int cast is scalar-checked first — an injected
+ * serialized object is flattened to '' before it can reach __toString().
  *
  * @package VideoFlowCore
  */
@@ -24,6 +33,31 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
+
+	/**
+	 * A single post-meta value as a string — but '' unless it is scalar.
+	 * Neutralises a serialized-object meta value before any string cast.
+	 */
+	function vfaudit_core_meta_string( int $post_id, string $key ): string {
+		$value = get_post_meta( $post_id, $key, true );
+		return is_scalar( $value ) ? (string) $value : '';
+	}
+
+	/**
+	 * A multi-value post-meta key as a list of non-empty strings, dropping
+	 * any non-scalar entry.
+	 *
+	 * @return string[]
+	 */
+	function vfaudit_core_meta_string_list( int $post_id, string $key ): array {
+		$out = array();
+		foreach ( (array) get_post_meta( $post_id, $key, false ) as $value ) {
+			if ( is_scalar( $value ) && '' !== (string) $value ) {
+				$out[] = (string) $value;
+			}
+		}
+		return $out;
+	}
 
 	/**
 	 * @return array<int,array<string,mixed>> One row per (video_id, post_id).
@@ -36,7 +70,7 @@ if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
 		}
 
 		$course_post = get_post( $course_id );
-		if ( ! $course_post ) {
+		if ( ! $course_post || get_post_type( $course_post ) !== vfaudit_core_adapter_course_post_type() ) {
 			return array();
 		}
 
@@ -84,7 +118,7 @@ if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
 			if ( 'bunny' === $provider ) {
 				$post_id      = (int) ( $video['post_id'] ?? 0 );
 				$video_id_str = (string) ( $video['video_id'] ?? '' );
-				$owned_ids    = array_map( 'strval', (array) get_post_meta( $post_id, 'bunny_video_id', false ) );
+				$owned_ids    = vfaudit_core_meta_string_list( $post_id, 'bunny_video_id' );
 				$is_owned     = '' !== $video_id_str && in_array( $video_id_str, $owned_ids, true );
 
 				$video['managed'] = $is_owned;
@@ -130,6 +164,12 @@ if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
 	 * @return array<int,array<string,mixed>>
 	 */
 	function vfaudit_core_get_course_videos_cached( int $course_id ): array {
+		// Never cache (or scan) for anything that is not a real course post —
+		// keeps a CSRF'd ?course_id=<n> loop from churning the options table.
+		if ( ! vfaudit_core_has_adapter() || get_post_type( $course_id ) !== vfaudit_core_adapter_course_post_type() ) {
+			return array();
+		}
+
 		$key    = 'vfaudit_course_videos_' . $course_id;
 		$cached = get_transient( $key );
 		if ( false !== $cached ) {
@@ -171,6 +211,16 @@ if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
 		if ( ! is_array( $vm ) ) {
 			return array();
 		}
+
+		// Flatten any non-scalar entry (e.g. an injected serialized object,
+		// which get_post_meta() unserializes) to '' so nothing downstream can
+		// trigger __toString() on attacker-controlled data.
+		$vm = array_map(
+			static function ( $value ) {
+				return is_scalar( $value ) ? $value : '';
+			},
+			$vm
+		);
 
 		$source = (string) ( $vm['source'] ?? '' );
 		$rows   = array();
@@ -341,8 +391,8 @@ if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
 		);
 
 		$rows = array();
-		foreach ( array_filter( (array) get_post_meta( $post->ID, 'bunny_video_id', false ) ) as $guid ) {
-			$rows[] = vfaudit_core_bunny_row( $base, (string) $guid, $post );
+		foreach ( vfaudit_core_meta_string_list( (int) $post->ID, 'bunny_video_id' ) as $guid ) {
+			$rows[] = vfaudit_core_bunny_row( $base, $guid, $post );
 		}
 		return $rows;
 	}
@@ -358,7 +408,7 @@ if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
 	 * @return array<string,mixed>
 	 */
 	function vfaudit_core_vimeo_row( array $base, string $vimeo_id, object $post ): array {
-		$title = (string) get_post_meta( $post->ID, 'vimeo_video_title', true );
+		$title = vfaudit_core_meta_string( (int) $post->ID, 'vimeo_video_title' );
 		return array_merge(
 			$base,
 			array(
@@ -399,7 +449,7 @@ if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
 	 * @return array<string,mixed>
 	 */
 	function vfaudit_core_bunny_row( array $base, string $guid, object $post ): array {
-		$title = (string) get_post_meta( $post->ID, 'bunny_video_title', true );
+		$title = vfaudit_core_meta_string( (int) $post->ID, 'bunny_video_title' );
 		return array_merge(
 			$base,
 			array(
