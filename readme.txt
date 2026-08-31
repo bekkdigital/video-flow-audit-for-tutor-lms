@@ -87,3 +87,8 @@ audit view. You can deactivate this one.
 
 = 1.0.0 =
 * Initial release.
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+First release of Video Flow Audit for Tutor LMS.
