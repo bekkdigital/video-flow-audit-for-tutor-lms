@@ -30,12 +30,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           zip=$(ls ../dist/video-flow-audit-for-tutor-lms-*.zip | head -1)
           notes="Rolling build of \`main\` (\`${GITHUB_SHA:0:7}\`, $(date -u '+%Y-%m-%d %H:%M UTC')). For local testing only — the wordpress.org release ships on a version tag."
-          gh release delete preview --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag || true
-          gh release create preview "$zip" \
-            --repo "$GITHUB_REPOSITORY" \
-            --target "$GITHUB_SHA" \
-            --prerelease \
-            --title "Latest main build" \
-            --notes "$notes"
+          if gh release view preview --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload preview "$zip" --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit preview --repo "$GITHUB_REPOSITORY" \
+              --prerelease --title "Latest main build" --notes "$notes"
+          else
+            gh release create preview "$zip" --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" --prerelease \
+              --title "Latest main build" --notes "$notes"
+          fi
