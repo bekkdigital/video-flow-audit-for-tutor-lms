@@ -1,0 +1,41 @@
+name: Preview build
+
+# Rebuilds the distributable zip on every push to main and republishes it as
+# a single rolling "preview" pre-release, so there is always a stable
+# "latest build" download for local testing. This is NOT the wordpress.org
+# release — that goes out on a version tag via deploy.yml.
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: preview-build
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Build the distributable zip
+        run: bash build.sh
+
+      - name: Republish the "preview" pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          zip=$(ls ../dist/video-flow-audit-for-tutor-lms-*.zip | head -1)
+          notes="Rolling build of \`main\` (\`${GITHUB_SHA:0:7}\`, $(date -u '+%Y-%m-%d %H:%M UTC')). For local testing only — the wordpress.org release ships on a version tag."
+          gh release delete preview --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag || true
+          gh release create preview "$zip" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --prerelease \
+            --title "Latest main build" \
+            --notes "$notes"
