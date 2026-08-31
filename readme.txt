@@ -1,5 +1,5 @@
 === Video Flow Audit for Tutor LMS ===
-Contributors: bekkdigital
+Contributors: bekkdigitalstudio
 Tags: tutor lms, video, vimeo, youtube, bunny stream
 Requires at least: 6.5
 Tested up to: 7.1
