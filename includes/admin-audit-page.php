@@ -4,7 +4,7 @@
  * every Tutor LMS course, powered by Video Flow Core's scanner.
  *
  * No migration, no Bunny API, no write actions. From here the user is
- * pointed at the paid "Video Flow for Tutor LMS" to actually migrate.
+ * pointed at the commercial "Video Flow for Tutor LMS" to actually migrate.
  *
  * @package VideoFlowAuditForTutorLMS
  */

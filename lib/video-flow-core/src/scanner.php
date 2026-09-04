@@ -17,9 +17,9 @@
  * nothing to the database. The cached wrapper `vfaudit_core_get_course_videos_cached()`
  * stores one plugin-owned transient (`vfaudit_course_videos_<id>`, 5 min) and
  * nothing else. Nothing here ever touches LMS content, post meta, or a
- * video host. Plugins that can talk to Bunny (the paid Video Flow plugin)
- * enrich Bunny rows with live title / duration / views / transcode status
- * by hooking the `vfaudit_core_enrich_videos` filter.
+ * video host. A plugin that can talk to Bunny Stream can enrich Bunny
+ * rows with live title / duration / views / transcode status by hooking
+ * the `vfaudit_core_enrich_videos` filter.
  *
  * Untrusted-meta note: several fields read here (`_video`, `bunny_video_id`,
  * `*_video_title`) live on posts a lower-privilege user may be able to
@@ -134,8 +134,8 @@ if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
 
 		/**
 		 * Enrich rows with data Core cannot obtain on its own (live Bunny
-		 * title / duration / views / transcode status). The paid Video Flow
-		 * plugin hooks this; the free audit plugin does not.
+		 * title / duration / views / transcode status). A Bunny-connected
+		 * consumer hooks this; a read-only consumer leaves it untouched.
 		 *
 		 * @param array<int,array<string,mixed>> $videos
 		 * @param int                            $course_id

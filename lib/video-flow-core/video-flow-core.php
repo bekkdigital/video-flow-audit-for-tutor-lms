@@ -2,11 +2,11 @@
 /**
  * Video Flow Core — package entry point / version-negotiating loader.
  *
- * Every Video Flow plugin bundles its own copy of this package under
- * vendor/bekkdigital/video-flow-core/. When more than one such plugin is
- * active, each copy runs this file at plugin-load time, registers its
- * version, and the newest copy wins — its src/bootstrap.php is the only
- * one that actually defines the vfaudit_core_* functions.
+ * A consuming plugin bundles its own copy of this package. When more than
+ * one active plugin bundles it, each copy runs this file at plugin-load
+ * time, registers its version, and the newest copy wins — its
+ * src/bootstrap.php is the only one that actually defines the vfaudit_core_*
+ * functions.
  *
  * This mirrors the loader pattern used by Action Scheduler and similar
  * shared libraries. No classes, no namespace — the Video Flow family is

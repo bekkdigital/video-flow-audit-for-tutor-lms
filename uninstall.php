@@ -4,7 +4,7 @@
  *
  * This plugin stores nothing of its own except Core's short-lived scan
  * caches. It never touches Tutor LMS data (`_video`, `_oembed_*`,
- * `_tutor_course_id_for_lesson`) or the paid plugin's meta.
+ * `_tutor_course_id_for_lesson`) or meta owned by other plugins.
  *
  * @package VideoFlowAuditForTutorLMS
  */

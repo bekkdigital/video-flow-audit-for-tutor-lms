@@ -1,11 +1,11 @@
 <?php
 /**
- * Coexistence with the paid "Video Flow for Tutor LMS" plugin.
+ * Coexistence with the commercial "Video Flow for Tutor LMS" plugin,
+ * which already includes this audit view.
  *
- * The two plugins share the Video Flow Core library but the paid one also
- * defines its own vf_core_* scanner (until it is migrated onto Core). To
- * avoid a fatal redeclaration — and a duplicate menu — this free plugin
- * bails out entirely whenever the paid plugin is active.
+ * To avoid a duplicate menu — and any chance of a function-name clash
+ * between bundled libraries — this plugin goes dormant (loads nothing,
+ * shows one notice) whenever that plugin is active.
  *
  * @package VideoFlowAuditForTutorLMS
  */
@@ -13,24 +13,24 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Is the paid "Video Flow for Tutor LMS" plugin active (site or network)?
+ * Is the commercial "Video Flow for Tutor LMS" plugin active (site or network)?
  */
-function vfaudit_paid_plugin_active(): bool {
-	$paid = 'video-flow-for-tutor-lms/video-flow-for-tutor-lms.php';
+function vfaudit_companion_plugin_active(): bool {
+	$companion = 'video-flow-for-tutor-lms/video-flow-for-tutor-lms.php';
 
 	$active = (array) get_option( 'active_plugins', array() );
-	if ( in_array( $paid, $active, true ) ) {
+	if ( in_array( $companion, $active, true ) ) {
 		return true;
 	}
 
 	if ( is_multisite() ) {
 		$network = (array) get_site_option( 'active_sitewide_plugins', array() );
-		if ( isset( $network[ $paid ] ) ) {
+		if ( isset( $network[ $companion ] ) ) {
 			return true;
 		}
 	}
 
-	// Belt and braces: the paid plugin defines this.
+	// Belt and braces: the companion plugin defines this.
 	return function_exists( 'vf_video_flow_page' );
 }
 

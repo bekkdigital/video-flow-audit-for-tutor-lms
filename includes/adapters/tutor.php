@@ -44,10 +44,10 @@ add_action(
 /**
  * All lesson/topic post IDs that belong to a course's curriculum.
  *
- * Mirrors the discovery the paid plugin's scanner did inline: meta link,
- * direct parent, topic parent — then filtered against Tutor's live
- * curriculum so lessons removed in the course builder (but still carrying
- * stale meta) drop out.
+ * Discovers lessons three ways — the `_tutor_course_id_for_lesson` meta
+ * link, a direct `post_parent`, and lessons under the course's topics —
+ * then filters against Tutor's live curriculum so lessons removed in the
+ * course builder (but still carrying stale meta) drop out.
  *
  * @return int[]
  */

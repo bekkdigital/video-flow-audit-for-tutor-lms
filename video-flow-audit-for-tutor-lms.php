@@ -22,10 +22,10 @@ define( 'VFAUDIT_MENU_SLUG', 'tutor-video-flow-audit' );
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/compat.php';
 
-// The paid "Video Flow for Tutor LMS" already ships this audit view (and a
-// full-featured Video Manager). When it is active, stay completely dormant —
+// The commercial "Video Flow for Tutor LMS" already includes this audit view (and a
+// full Video Manager). When it is active, stay completely dormant —
 // don't load Core, don't register a menu — and point the user at it once.
-if ( vfaudit_paid_plugin_active() ) {
+if ( vfaudit_companion_plugin_active() ) {
 	add_action( 'admin_notices', 'vfaudit_render_dormant_notice' );
 	return;
 }

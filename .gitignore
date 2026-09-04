@@ -5,3 +5,7 @@
 /composer.phar
 /.phpunit.result.cache
 /dist/
+
+# Internal dev-agent notes — kept local, not published.
+/CLAUDE.md
+/AGENTS.md
