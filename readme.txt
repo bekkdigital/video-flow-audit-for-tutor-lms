@@ -1,6 +1,6 @@
 === Video Flow Audit for Tutor LMS ===
 Contributors: bekkdigitalstudio
-Tags: tutor lms, video audit, video management, vimeo, bunny stream
+Tags: tutor lms, video audit, vimeo, youtube, bunny stream
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.0
@@ -8,274 +8,111 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Free, read-only Tutor LMS video audit plugin that finds Vimeo, YouTube, Bunny Stream and self-hosted videos by course and lesson.
+Free, read-only audit of every video in your Tutor LMS courses — Vimeo, YouTube, Bunny Stream and self-hosted — grouped by course and lesson.
 
 == Description ==
 
-**Video Flow Audit for Tutor LMS is a free, read-only WordPress plugin that scans your Tutor LMS courses and creates an inventory of Vimeo, YouTube, Bunny Stream and self-hosted videos by course and lesson.**
+**Video Flow Audit for Tutor LMS scans your Tutor LMS courses and builds an inventory of every video it can find — Vimeo, YouTube, Bunny Stream or self-hosted — grouped by course and lesson.**
 
-Videos in Tutor LMS can be referenced in several different places: the lesson video field, lesson content, WordPress oEmbed data and self-hosted media files.
+Videos in Tutor LMS get referenced in several places: the lesson video field, raw URLs and embeds in lesson content, the WordPress oEmbed cache, and self-hosted files in the Media Library. Video Flow Audit pulls all of those references into one admin screen, so you can see what your course-video library actually looks like before you clean it up, switch hosts, or migrate.
 
-Video Flow Audit brings those references together in one administrative view so you can understand your existing Tutor LMS video library before cleaning it up, changing video hosts or migrating videos.
+The plugin is **read-only by design**. It never edits a lesson, moves a file, uploads a video, or contacts an external video host. Everything it reports is read from data already stored in your WordPress database — no account, no licence key, no API credentials.
 
-The plugin is intentionally read-only. It does not modify lessons, move files, upload videos or connect to external video-hosting APIs.
+= What it shows =
 
-= Features =
+**Course overview** — every course that contains at least one video, with a count. Filter by author.
 
-* Audit video references across Tutor LMS courses and lessons.
-* Detect Vimeo video references.
-* Detect YouTube video references.
-* Detect Bunny Stream video references.
-* Detect supported externally embedded Bunny Stream videos.
-* Detect supported self-hosted WordPress videos.
-* Show videos grouped by course and lesson.
-* Filter the course overview by author.
-* Show available video titles or filenames.
-* Show video IDs with one-click copy.
-* Show duration information for supported self-hosted files.
-* Flag the same underlying video when it is referenced in multiple places.
-* Flag supported WordPress oEmbed references.
-* Flag video references associated with a lesson but not currently embedded in an active lesson field or content location.
-* Read-only operation — no course content is modified.
-* No video-host credentials required.
-* No external API calls required.
-* No WPVideoFlow account or licence key required.
+**Per-course breakdown** — for each video: the lesson it is on, the provider (Vimeo, YouTube, Bunny Stream, self-hosted, or an externally embedded Bunny video), the title or filename, the video ID (one click to copy), and the duration for self-hosted files.
 
-= What does Video Flow Audit scan? =
+**Audit flags:**
 
-Video Flow Audit examines Tutor LMS and WordPress data already stored on your site.
+* **Not embedded** — the video is tracked against a lesson but is not actually in any active lesson field or content. Usually the leftover of an interrupted upload or a changed video.
+* **From oEmbed cache** — WordPress is still holding an oEmbed entry for an old video URL, for example a Vimeo reference on a lesson you have since moved elsewhere.
+* **Used in N places** — the same underlying video is referenced from more than one lesson or course, so you know the blast radius before you replace or delete it.
 
-Supported sources and reference locations include:
+= What it detects =
+
+Video Flow Audit reads Tutor LMS and WordPress data already on your site:
 
 * Tutor LMS lesson video fields
-* Video URLs and embeds stored in lesson content
-* WordPress oEmbed cache data
-* Vimeo video references
-* YouTube video references
-* Bunny Stream video references
-* Supported externally embedded Bunny Stream videos
-* Supported self-hosted videos associated with the WordPress Media Library
+* Video URLs and embeds in lesson content
+* The WordPress oEmbed cache
+* Self-hosted videos in the Media Library
 
-The audit reports what it can identify from your WordPress site. It does not log in to Vimeo, YouTube, Bunny Stream or other external video platforms.
+It identifies Vimeo, YouTube and Bunny Stream references, externally embedded Bunny Stream videos, and self-hosted WordPress videos. It does not log in to Vimeo, YouTube, Bunny Stream or any other platform, and it does not perform a remote orphan scan of your video-host account — it reports what your WordPress site references.
 
-= What information does the audit show? =
+= Who it is for =
 
-For each Tutor LMS course with detected videos, the audit can show:
-
-* Course name
-* Course author
-* Number of detected video references
-* Lesson containing the video reference
-* Video provider
-* Video title or filename where available
-* Video ID where available
-* Duration for supported self-hosted files
-* Usage information when the same underlying video is referenced in multiple places
-* Relevant audit flags
-
-= Audit flags =
-
-**Not embedded**
-
-A video reference is associated with a Tutor LMS lesson but is not currently detected in an active lesson video field or content location.
-
-This can occur after an interrupted or changed video workflow.
-
-**From oEmbed cache**
-
-WordPress still contains an oEmbed reference for the video.
-
-For example, a lesson that previously used Vimeo may retain an older Vimeo oEmbed cache entry after the active lesson video has been changed.
-
-**Used in N places**
-
-The same underlying video is referenced from multiple lessons or courses.
-
-This gives you a clearer picture of video usage before replacing, migrating or removing a video.
-
-= Who is Video Flow Audit for? =
-
-Video Flow Audit is designed for Tutor LMS site owners, course creators and WordPress administrators who need to understand their existing course-video setup.
-
-It is particularly useful before:
-
-* Migrating course videos from Vimeo
-* Moving videos to Bunny Stream
-* Reviewing a mixed video-hosting setup
-* Cleaning up an older Tutor LMS site
-* Reviewing self-hosted course videos
-* Replacing old video references
-* Checking whether the same video is used in multiple lessons
-* Planning a course-video migration
-* Reviewing a Tutor LMS video library before making changes
-
-= Read-only by design =
-
-Video Flow Audit does not:
-
-* Edit Tutor LMS lessons
-* Replace video URLs
-* Upload videos
-* Delete videos
-* Move videos between hosting platforms
-* Connect to Vimeo
-* Connect to YouTube
-* Connect to Bunny Stream
-* Require external API keys
-* Require an account with WPVideoFlow
-
-The audit is based on information already stored on your WordPress site.
+Tutor LMS site owners, course creators and administrators who need to understand an existing course-video setup — typically before migrating off Vimeo, moving to Bunny Stream, cleaning up an older site, or reviewing a mixed hosting setup.
 
 = Privacy =
 
-Video Flow Audit does not send your course or video data to WPVideoFlow.
+Video Flow Audit sends nothing anywhere. It makes no external requests, requires no API credentials for Vimeo, YouTube or Bunny Stream, and does not send your course or video data to WPVideoFlow. The audit runs entirely on data stored in your WordPress installation.
 
-The plugin performs its audit using data stored locally in your WordPress installation.
+= Need to migrate and manage videos too? =
 
-It does not require API credentials for Vimeo, YouTube or Bunny Stream.
+Video Flow Audit only reports. If you also need to migrate Vimeo and self-hosted videos to Bunny Stream, upload through the Tutor course builder, reuse existing Bunny videos, or manage everything from a Video Manager, see **[Video Flow for Tutor LMS](https://wpvideoflow.com/video-flow-for-tutor-lms/)**. It already includes this audit view, so if it is active, Video Flow Audit stays dormant.
 
-= Need migration and video management too? =
-
-Video Flow Audit is intentionally read-only.
-
-If you also need to migrate Vimeo or self-hosted course videos to Bunny Stream, upload videos through Tutor LMS workflows, reuse existing Bunny Stream videos, or manage your course-video library from a central Video Manager, see:
-
-[Video Flow for Tutor LMS](https://wpvideoflow.com/video-flow-for-tutor-lms/)
-
-More information about the free audit plugin:
-
-[Video Flow Audit for Tutor LMS](https://wpvideoflow.com/video-flow-audit-for-tutor-lms/)
+More on the free plugin: [Video Flow Audit for Tutor LMS](https://wpvideoflow.com/video-flow-audit-for-tutor-lms/)
 
 == Installation ==
 
-1. In WordPress, go to **Plugins > Add New**.
-2. Search for **Video Flow Audit for Tutor LMS**.
-3. Install the plugin.
-4. Activate it.
-5. Make sure Tutor LMS is active.
-6. Go to **Tutor LMS > Video Audit**.
-7. Review your courses and detected video references.
-
-You can also download the plugin from WordPress.org and upload it manually to `/wp-content/plugins/`.
+1. In WordPress, go to **Plugins → Add New** and search for **Video Flow Audit for Tutor LMS** (or upload the plugin zip).
+2. Install and activate it. Tutor LMS (free or Pro) must be active.
+3. Go to **Tutor LMS → Video Audit** and review your courses.
 
 == Frequently Asked Questions ==
 
-= Does Video Flow Audit change anything in my Tutor LMS courses? =
+= Does it change anything in my courses? =
 
-No.
+No. Video Flow Audit is strictly read-only — it never edits lessons, moves files, or touches your video-hosting accounts. Deactivating or uninstalling it does not alter your course videos.
 
-Video Flow Audit is strictly read-only. It does not edit lesson content, change Tutor LMS data, move files or modify your video-hosting accounts.
+= Does it work with Tutor LMS Free? =
 
-= Does Video Flow Audit work with Tutor LMS Free? =
+Yes — both Tutor LMS Free and Tutor LMS Pro.
 
-Yes.
+= What video sources can it detect? =
 
-Video Flow Audit works with both Tutor LMS Free and Tutor LMS Pro.
+Vimeo, YouTube and Bunny Stream references, externally embedded Bunny Stream videos, and self-hosted videos in the WordPress Media Library — wherever they are stored in the Tutor LMS lesson video field, lesson content, or the WordPress oEmbed cache.
 
-= Can Video Flow Audit find Vimeo videos used in Tutor LMS? =
+= It shows a Vimeo video I already migrated. Why? =
 
-Yes.
+WordPress keeps an oEmbed cache. After you change a lesson away from Vimeo, the old Vimeo reference can linger in that cache. Video Flow Audit flags those rows as **From oEmbed cache**.
 
-If a supported Vimeo reference is stored in the Tutor LMS or WordPress data scanned by the plugin, Video Flow Audit can identify it and show the course and lesson where it is referenced.
+= Can it find unused or orphaned videos? =
 
-= Can Video Flow Audit find Bunny Stream videos? =
+It flags videos that are tracked against a lesson but not embedded in any active lesson field or content ("Not embedded"). It does not scan your remote Vimeo or Bunny Stream account for unused uploads.
 
-Yes.
+= Do I need a Vimeo, YouTube or Bunny Stream account? =
 
-Video Flow Audit can identify supported Bunny Stream references already stored in Tutor LMS or WordPress.
+No. It never logs in to those services and needs no API keys.
 
-It does not require access to your Bunny account or Bunny API credentials.
+= Does it send data anywhere? =
 
-= Can it find YouTube videos used in Tutor LMS? =
+No. No external requests, and nothing is sent to WPVideoFlow.
 
-Yes.
+= Will it slow down my site? =
 
-Supported YouTube video references stored in the Tutor LMS or WordPress data scanned by the plugin can be included in the audit.
+No. The audit is an admin-only screen and adds nothing to front-end page loads. Results are cached briefly while you review them.
 
-= Can it find self-hosted Tutor LMS videos? =
+= Can it migrate videos? =
 
-Yes.
-
-Video Flow Audit can identify supported self-hosted video references, including videos associated with the WordPress Media Library.
-
-= Can it show if the same video is used in several lessons? =
-
-Yes.
-
-When the same underlying video is detected in multiple locations, Video Flow Audit can flag the usage so you can see where it is referenced before making changes.
-
-= Can Video Flow Audit find unused or orphaned videos? =
-
-Video Flow Audit audits video references found in Tutor LMS and WordPress data.
-
-It can identify situations such as a video reference associated with a lesson but not currently embedded in an active lesson field or content location.
-
-It does not perform a complete remote-library orphan scan of your Vimeo, Bunny Stream or other external video-hosting account.
-
-= It shows a Vimeo video that I already migrated. Why? =
-
-WordPress can retain oEmbed cache data for an older video URL.
-
-For example, after changing a lesson from Vimeo to another video source, the old Vimeo reference may still exist in the WordPress oEmbed cache.
-
-Video Flow Audit can identify supported cases like this and flag them as **From oEmbed cache**.
-
-= Does Video Flow Audit send data anywhere? =
-
-No.
-
-The audit is based on information already stored in WordPress.
-
-The plugin does not need to send your Tutor LMS course or video data to WPVideoFlow in order to perform the audit.
-
-= Do I need a Vimeo, YouTube or Bunny Stream account to run the audit? =
-
-No.
-
-Video Flow Audit does not log in to those services or require video-host API credentials.
-
-It reports on supported video references already stored on your WordPress site.
-
-= Can Video Flow Audit migrate videos? =
-
-No.
-
-Video Flow Audit is intentionally read-only.
-
-For supported Vimeo and self-hosted video migration to Bunny Stream and ongoing video-management workflows, see [Video Flow for Tutor LMS](https://wpvideoflow.com/video-flow-for-tutor-lms/).
-
-= Can I use Video Flow Audit alongside Video Flow for Tutor LMS? =
-
-Video Flow for Tutor LMS already includes the audit functionality.
-
-If Video Flow for Tutor LMS is active, the standalone free audit plugin does not need to provide a duplicate audit workflow.
-
-= What happens if I deactivate or uninstall Video Flow Audit? =
-
-Your Tutor LMS course content and video-hosting accounts are not modified by the audit, so deactivating or uninstalling the plugin does not undo or alter your course videos.
-
-= Will Video Flow Audit slow down my public site? =
-
-The video audit is an administrative workflow and does not add a full video-library scan to normal front-end Tutor LMS page loads.
-
-Audit results can be cached briefly to avoid unnecessary repeated scanning while you review them.
+No — that is [Video Flow for Tutor LMS](https://wpvideoflow.com/video-flow-for-tutor-lms/).
 
 == Screenshots ==
 
-1. Tutor LMS course overview showing each course and its detected video count.
-2. Per-course Tutor LMS video audit showing lesson, provider, video ID, title or filename, and video usage information.
+1. Course overview showing each course and its detected video count.
+2. Per-course breakdown showing lesson, provider, video ID, title or filename, and usage flags.
 
 == Changelog ==
 
 = 1.0.0 =
 * Initial public release.
-* Added Tutor LMS course and lesson video auditing.
-* Added detection for supported Vimeo, YouTube, Bunny Stream and self-hosted video references.
-* Added course-level video counts and per-course video breakdowns.
-* Added support for relevant WordPress oEmbed cache references.
-* Added flags for video references not currently embedded in an active lesson location.
-* Added detection of the same underlying video referenced from multiple locations.
-* Added read-only operation with no external video-host API requirement.
+* Audits Tutor LMS courses and lessons for video references.
+* Detects Vimeo, YouTube, Bunny Stream and self-hosted videos.
+* Course video counts and per-course breakdowns, filterable by author.
+* "Not embedded", "From oEmbed cache" and "used in N places" flags.
+* Read-only — no external video-host API required.
 
 == Upgrade Notice ==
 
