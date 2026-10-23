@@ -9,6 +9,8 @@
  *
  * Discovery sources per post:
  *   1. `_video` meta        — the LMS video-source modal (Tutor-style)
+ *   1b. adapter video field — the LMS's own video setting, when the adapter
+ *                             provides `get_video_field_text` (LearnDash)
  *   2. `post_content`       — raw URLs, [embed], <video>, [video]
  *   3. `_oembed_*` meta     — WordPress oEmbed cache
  *   4. `bunny_video_id` meta — videos this plugin family uploaded to Bunny
@@ -99,6 +101,7 @@ if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
 			$videos = array_merge(
 				$videos,
 				vfaudit_core_scan_video_meta( $post, $used_in ),
+				vfaudit_core_scan_video_field( $post, $used_in ),
 				vfaudit_core_scan_post_content( $post, $used_in ),
 				vfaudit_core_scan_oembed_meta( $post, $used_in ),
 				vfaudit_core_scan_bunny_meta( $post, $used_in )
@@ -295,17 +298,59 @@ if ( ! function_exists( 'vfaudit_core_get_course_videos' ) ) {
 	 * @return array<int,array<string,mixed>>
 	 */
 	function vfaudit_core_scan_post_content( object $post, string $used_in ): array {
-		$content = (string) $post->post_content;
-		if ( '' === $content ) {
-			return array();
-		}
-
 		$base = array(
 			'post_id'    => (int) $post->ID,
 			'post_title' => (string) $post->post_title,
 			'post_type'  => (string) $post->post_type,
 			'used_in'    => $used_in,
 		);
+
+		return vfaudit_core_scan_text( (string) $post->post_content, $base, $post );
+	}
+
+	/**
+	 * Pass 1b — the LMS's own video field, supplied by the adapter's optional
+	 * `get_video_field_text` callback (e.g. LearnDash's lesson/topic video
+	 * URL). Rows are flagged `from_video_field` so a consumer knows the video
+	 * lives in that field rather than in post_content.
+	 *
+	 * @return array<int,array<string,mixed>>
+	 */
+	function vfaudit_core_scan_video_field( object $post, string $used_in ): array {
+		$base = array(
+			'post_id'    => (int) $post->ID,
+			'post_title' => (string) $post->post_title,
+			'post_type'  => (string) $post->post_type,
+			'used_in'    => $used_in,
+		);
+
+		$rows = array();
+		foreach ( vfaudit_core_adapter_video_field_text( $post ) as $text ) {
+			// A video field may hold a bare local file URL (no <video> or
+			// [video] wrapper); wrap it so the local-file extractor sees it.
+			$text = trim( $text );
+			if ( preg_match( '#^https?://\S+$#i', $text ) ) {
+				$text = '[video src="' . $text . '"]';
+			}
+			foreach ( vfaudit_core_scan_text( $text, $base, $post ) as $row ) {
+				$row['from_video_field'] = true;
+				$rows[]                  = $row;
+			}
+		}
+		return $rows;
+	}
+
+	/**
+	 * Every video referenced by a blob of text (post_content or a video
+	 * field value): Vimeo, YouTube, Bunny, and local files under uploads.
+	 *
+	 * @param array<string,mixed> $base
+	 * @return array<int,array<string,mixed>>
+	 */
+	function vfaudit_core_scan_text( string $content, array $base, object $post ): array {
+		if ( '' === $content ) {
+			return array();
+		}
 
 		$rows = array();
 

@@ -19,5 +19,7 @@ $wpdb->query(
 	 WHERE option_name LIKE '\_transient\_vfaudit_course_videos\_%'
 	    OR option_name LIKE '\_transient\_timeout\_vfaudit_course_videos\_%'
 	    OR option_name LIKE '\_transient\_vfaudit_course_counts\_%'
-	    OR option_name LIKE '\_transient\_timeout\_vfaudit_course_counts\_%'"
+	    OR option_name LIKE '\_transient\_timeout\_vfaudit_course_counts\_%'
+	    OR option_name LIKE '\_transient\_vfaudit_course_images\_%'
+	    OR option_name LIKE '\_transient\_timeout\_vfaudit_course_images\_%'"
 );

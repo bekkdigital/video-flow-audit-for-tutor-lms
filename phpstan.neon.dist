@@ -10,6 +10,7 @@ parameters:
     scanFiles:
         - lib/video-flow-core/src/adapter.php
         - lib/video-flow-core/src/scanner.php
+        - lib/video-flow-core/src/images.php
         - lib/video-flow-core/src/courses.php
         - lib/video-flow-core/src/usages.php
         - lib/video-flow-core/src/format.php

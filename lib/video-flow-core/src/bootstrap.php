@@ -18,4 +18,5 @@ require_once __DIR__ . '/providers.php';
 require_once __DIR__ . '/format.php';
 require_once __DIR__ . '/usages.php';
 require_once __DIR__ . '/scanner.php';
+require_once __DIR__ . '/images.php';
 require_once __DIR__ . '/courses.php';

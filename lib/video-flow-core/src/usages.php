@@ -64,8 +64,8 @@ if ( ! function_exists( 'vfaudit_core_get_video_usages' ) ) {
 
 	/**
 	 * Whether a video ID actually appears in a post's visible fields
-	 * (post_content or the Tutor-style `_video` modal meta) — not merely
-	 * in the plugin's own tracking meta.
+	 * (post_content, the Tutor-style `_video` modal meta, or the adapter's
+	 * video field) — not merely in the plugin's own tracking meta.
 	 */
 	function vfaudit_core_video_is_embedded_in_post( string $video_id, int $post_id ): bool {
 		if ( '' === $video_id ) {
@@ -82,6 +82,15 @@ if ( ! function_exists( 'vfaudit_core_get_video_usages' ) ) {
 			$encoded = wp_json_encode( $video_meta );
 			if ( is_string( $encoded ) && false !== strpos( $encoded, $video_id ) ) {
 				return true;
+			}
+		}
+
+		$post = get_post( $post_id );
+		if ( $post ) {
+			foreach ( vfaudit_core_adapter_video_field_text( $post ) as $text ) {
+				if ( false !== strpos( $text, $video_id ) ) {
+					return true;
+				}
 			}
 		}
 

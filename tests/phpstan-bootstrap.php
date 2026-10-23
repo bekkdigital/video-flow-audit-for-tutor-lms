@@ -10,6 +10,7 @@ defined( 'VFAUDIT_PLUGIN_FILE' ) || define( 'VFAUDIT_PLUGIN_FILE', '/tmp/wp/plug
 defined( 'VFAUDIT_MENU_SLUG' ) || define( 'VFAUDIT_MENU_SLUG', 'tutor-video-flow-audit' );
 defined( 'VFAUDIT_CORE_LOADED' ) || define( 'VFAUDIT_CORE_LOADED', '1.0.0' );
 defined( 'VFAUDIT_CORE_DEBUG' ) || define( 'VFAUDIT_CORE_DEBUG', false );
+defined( 'VFAUDIT_CORE_LARGE_IMAGE_BYTES' ) || define( 'VFAUDIT_CORE_LARGE_IMAGE_BYTES', 512000 );
 defined( 'MINUTE_IN_SECONDS' ) || define( 'MINUTE_IN_SECONDS', 60 );
 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- WordPress core constant, declared for static analysis only.
 defined( 'WP_UNINSTALL_PLUGIN' ) || define( 'WP_UNINSTALL_PLUGIN', true );

@@ -6,7 +6,8 @@
  * (post content, meta values, oEmbed cache). No HTTP, no WordPress
  * dependency — trivially unit-testable.
  *
- * Supported providers: Vimeo, YouTube, Bunny Stream, local/self-hosted.
+ * Supported providers: Vimeo, YouTube, Bunny Stream (mediadelivery.net embeds
+ * and vz-*.b-cdn.net playback URLs), local/self-hosted.
  *
  * @package VideoFlowCore
  */
@@ -122,29 +123,51 @@ if ( ! function_exists( 'vfaudit_core_strip_embed_shortcode' ) ) {
 	}
 
 	/**
-	 * The Bunny Stream video GUID from a mediadelivery.net embed URL, or null.
+	 * Bunny Stream CDN playback files: the HLS playlist or an MP4 fallback
+	 * rendition on the library's vz-*.b-cdn.net pull zone, e.g.
+	 * https://vz-e83ef395-9a2.b-cdn.net/<guid>/playlist.m3u8. Deliberately
+	 * excludes thumbnail/preview images on the same host, which are not
+	 * video embeds.
+	 */
+	define( 'VFAUDIT_CORE_BUNNY_CDN_PATTERN', '#vz-[a-z0-9-]+\.b-cdn\.net/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/(?:playlist\.m3u8|play_\d+p\.mp4)#i' );
+
+	/**
+	 * The Bunny Stream video GUID from a mediadelivery.net embed URL or a
+	 * vz-*.b-cdn.net playback URL, or null.
 	 */
 	function vfaudit_core_extract_bunny_guid( string $url ): ?string {
-		if ( false === stripos( $url, 'mediadelivery.net' ) ) {
-			return null;
+		if ( false !== stripos( $url, 'mediadelivery.net' ) && preg_match( '#mediadelivery\.net/(?:embed|play)/[^/]+/([a-f0-9-]{20,})#i', $url, $m ) ) {
+			return strtolower( $m[1] );
 		}
-		return preg_match( '#mediadelivery\.net/(?:embed|play)/[^/]+/([a-f0-9-]{20,})#i', $url, $m ) ? strtolower( $m[1] ) : null;
+		if ( false !== stripos( $url, 'b-cdn.net' ) && preg_match( VFAUDIT_CORE_BUNNY_CDN_PATTERN, $url, $m ) ) {
+			return strtolower( $m[1] );
+		}
+		return null;
 	}
 
 	/**
-	 * Every Bunny GUID referenced by a blob of text.
+	 * Every Bunny GUID referenced by a blob of text (mediadelivery.net
+	 * embeds and vz-*.b-cdn.net playback URLs).
 	 *
 	 * @return string[] Unique GUIDs, in first-seen order.
 	 */
 	function vfaudit_core_extract_bunny_guids( string $text ): array {
-		if ( '' === $text || false === stripos( $text, 'mediadelivery.net' ) ) {
+		if ( '' === $text ) {
 			return array();
 		}
-		preg_match_all( '#mediadelivery\.net/(?:embed|play)/[^/]+/([a-f0-9-]{20,})#i', $text, $m );
 
 		$ids = array();
-		foreach ( $m[1] as $id ) {
-			$ids[ strtolower( $id ) ] = true;
+		if ( false !== stripos( $text, 'mediadelivery.net' ) ) {
+			preg_match_all( '#mediadelivery\.net/(?:embed|play)/[^/]+/([a-f0-9-]{20,})#i', $text, $m );
+			foreach ( $m[1] as $id ) {
+				$ids[ strtolower( $id ) ] = true;
+			}
+		}
+		if ( false !== stripos( $text, 'b-cdn.net' ) ) {
+			preg_match_all( VFAUDIT_CORE_BUNNY_CDN_PATTERN, $text, $m );
+			foreach ( $m[1] as $id ) {
+				$ids[ strtolower( $id ) ] = true;
+			}
 		}
 		return array_keys( $ids );
 	}

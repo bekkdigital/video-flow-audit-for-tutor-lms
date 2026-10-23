@@ -18,7 +18,20 @@
  *       // optional:
  *       'get_used_in_label'    => function ( int $post_id, int $course_id ): string { ... },
  *       'list_course_ids'      => function ( int $author_id ): array { ... },
+ *       'get_video_field_text' => function ( WP_Post $post ): array { ... },
+ *       'get_attachment_ids'   => function ( WP_Post $post ): array { ... },
  *   ) );
+ *
+ * `get_video_field_text` exposes the LMS's own "lesson video" setting when
+ * it is stored somewhere Core cannot know about (e.g. LearnDash keeps it in
+ * a serialized `_sfwd-lessons` array). Return the raw stored value(s) — a
+ * URL, [embed] shortcode or <iframe> — as strings; Core scans them with the
+ * same extractors as post_content. Tutor's `_video` meta is still scanned
+ * natively and needs no callback.
+ *
+ * `get_attachment_ids` returns the Media Library attachment IDs the LMS
+ * attaches to a post outside its content (e.g. Tutor's `_tutor_attachments`).
+ * The image scanner reports image attachments and counts the rest.
  *
  * @package VideoFlowCore
  */
@@ -126,6 +139,50 @@ if ( ! function_exists( 'vfaudit_core_register_lms_adapter' ) ) {
 
 		$course_title = $course_id ? (string) get_the_title( $course_id ) : '';
 		return trim( $course_title . ' → ' . (string) get_the_title( $post_id ), ' →' );
+	}
+
+	/**
+	 * Raw text of the LMS's own video field(s) for a post, via the adapter's
+	 * optional `get_video_field_text` callback. Non-scalar / empty entries
+	 * are dropped (the callback may read untrusted post meta).
+	 *
+	 * @return string[]
+	 */
+	function vfaudit_core_adapter_video_field_text( object $post ): array {
+		$adapter = vfaudit_core_get_adapter();
+		if ( ! $adapter || ! isset( $adapter['get_video_field_text'] ) ) {
+			return array();
+		}
+
+		$out = array();
+		foreach ( (array) call_user_func( $adapter['get_video_field_text'], $post ) as $value ) {
+			if ( is_scalar( $value ) && '' !== trim( (string) $value ) ) {
+				$out[] = (string) $value;
+			}
+		}
+		return $out;
+	}
+
+	/**
+	 * Attachment IDs the LMS attaches to a post, via the adapter's optional
+	 * `get_attachment_ids` callback. Non-scalar / non-positive entries are
+	 * dropped (the callback may read untrusted post meta).
+	 *
+	 * @return int[]
+	 */
+	function vfaudit_core_adapter_attachment_ids( object $post ): array {
+		$adapter = vfaudit_core_get_adapter();
+		if ( ! $adapter || ! isset( $adapter['get_attachment_ids'] ) ) {
+			return array();
+		}
+
+		$out = array();
+		foreach ( (array) call_user_func( $adapter['get_attachment_ids'], $post ) as $value ) {
+			if ( is_scalar( $value ) && (int) $value > 0 ) {
+				$out[] = (int) $value;
+			}
+		}
+		return array_values( array_unique( $out ) );
 	}
 
 	/**

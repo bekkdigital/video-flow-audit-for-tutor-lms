@@ -139,3 +139,47 @@
 .vfaudit-upgrade-list li {
 	margin: 2px 0;
 }
+
+.vfaudit-tabs {
+	margin-bottom: 14px;
+}
+
+.vfaudit-tag-warn {
+	background: #fcf0e3;
+	color: #b06000;
+}
+
+.vfaudit-thumb-col {
+	width: 64px;
+}
+
+.vfaudit-thumb {
+	display: block;
+	width: 56px;
+	height: 56px;
+	object-fit: cover;
+	border-radius: 3px;
+	background: #f0f0f1;
+}
+
+.vfaudit-file {
+	word-break: break-all;
+}
+
+.vfaudit-dims {
+	color: #646970;
+	font-size: 12px;
+}
+
+.vfaudit-used {
+	margin: 0;
+}
+
+.vfaudit-used li {
+	margin: 0 0 2px;
+}
+
+.vfaudit-role {
+	color: #646970;
+	font-size: 12px;
+}

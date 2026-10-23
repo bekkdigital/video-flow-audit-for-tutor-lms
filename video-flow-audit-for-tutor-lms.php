@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Video Flow Audit for Tutor LMS
  * Plugin URI:        https://wpvideoflow.com/video-flow-audit-for-tutor-lms/
- * Description:       Audit Tutor LMS course videos and identify video configuration and usage issues.
- * Version:           1.0.0
+ * Description:       Audit Tutor LMS course videos and images and identify configuration and usage issues.
+ * Version:           1.1.0
  * Requires at least: 6.5
  * Requires PHP:      8.0
  * Author:            Bekk Digital Studio
@@ -16,14 +16,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'VFAUDIT_VERSION', '1.0.0' );
+define( 'VFAUDIT_VERSION', '1.1.0' );
 define( 'VFAUDIT_PLUGIN_FILE', __FILE__ );
 define( 'VFAUDIT_MENU_SLUG', 'tutor-video-flow-audit' );
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/compat.php';
 
 // The commercial "Video Flow for Tutor LMS" already includes this audit view (and a
-// full Video Manager). When it is active, stay completely dormant —
+// full Course Media manager). When it is active, stay completely dormant —
 // don't load Core, don't register a menu — and point the user at it once.
 if ( vfaudit_companion_plugin_active() ) {
 	add_action( 'admin_notices', 'vfaudit_render_dormant_notice' );
@@ -38,7 +38,7 @@ if ( is_admin() ) {
 }
 
 /**
- * Register the "Video Audit" screen under the Tutor LMS menu.
+ * Register the "Course Media Audit" screen under the Tutor LMS menu.
  */
 add_action(
 	'admin_menu',
@@ -46,7 +46,7 @@ add_action(
 		$hook = add_submenu_page(
 			'tutor',
 			__( 'Video Flow Audit for Tutor LMS', 'video-flow-audit-for-tutor-lms' ),
-			__( 'Video Audit', 'video-flow-audit-for-tutor-lms' ),
+			__( 'Course Media Audit', 'video-flow-audit-for-tutor-lms' ),
 			'manage_options',
 			VFAUDIT_MENU_SLUG,
 			'vfaudit_render_page'
@@ -74,8 +74,25 @@ function vfaudit_bust_scan_caches( $post_id ): void {
 	}
 	vfaudit_core_invalidate_course_videos_cache( (int) $post_id );
 	vfaudit_core_invalidate_course_counts_cache();
+
+	$course_id = vfaudit_core_adapter_resolve_course_id( (int) $post_id );
+	delete_transient( vfaudit_core_course_images_cache_key( $course_id > 0 ? $course_id : (int) $post_id ) );
 }
 add_action( 'save_post', 'vfaudit_bust_scan_caches' );
 add_action( 'deleted_post', 'vfaudit_bust_scan_caches' );
 add_action( 'trashed_post', 'vfaudit_bust_scan_caches' );
 add_action( 'untrashed_post', 'vfaudit_bust_scan_caches' );
+
+/**
+ * Drop every cached course image list when a Media Library item changes
+ * (alt text, delete) — one image may be used in many courses.
+ */
+function vfaudit_bust_image_caches(): void {
+	global $wpdb;
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- targeted transient cleanup, no WP API for wildcard transient delete.
+	$wpdb->query(
+		"DELETE FROM {$wpdb->options} WHERE option_name LIKE '\_transient\_vfaudit_course_images\_%' OR option_name LIKE '\_transient\_timeout\_vfaudit_course_images\_%'"
+	);
+}
+add_action( 'edit_attachment', 'vfaudit_bust_image_caches' );
+add_action( 'delete_attachment', 'vfaudit_bust_image_caches' );

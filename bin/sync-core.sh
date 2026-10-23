@@ -27,7 +27,8 @@ find "${DEST}" -name '*.php' -print0 | xargs -0 sed -i \
   -e 's/\bvf_core_/vfaudit_core_/g' \
   -e 's/\bVF_CORE_/VFAUDIT_CORE_/g' \
   -e 's/vf_course_videos/vfaudit_course_videos/g' \
-  -e 's/vf_course_counts/vfaudit_course_counts/g'
+  -e 's/vf_course_counts/vfaudit_course_counts/g' \
+  -e 's/vf_course_images/vfaudit_course_images/g'
 
 echo "Synced + prefixed Video Flow Core -> lib/video-flow-core"
 grep -m1 "vfaudit_core_register_package" "${DEST}/video-flow-core.php"

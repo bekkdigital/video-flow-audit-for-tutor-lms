@@ -34,6 +34,7 @@ add_action(
 				'resolve_course_id'    => 'vfaudit_tutor_resolve_course_id',
 				'get_used_in_label'    => 'vfaudit_tutor_used_in_label',
 				'list_course_ids'      => 'vfaudit_tutor_list_course_ids',
+				'get_attachment_ids'   => 'vfaudit_tutor_attachment_ids',
 			)
 		);
 	},
@@ -201,4 +202,16 @@ function vfaudit_tutor_list_course_ids( int $author_id = 0 ): array {
 		$args['author'] = $author_id;
 	}
 	return array_values( array_filter( array_map( 'intval', (array) get_posts( $args ) ) ) );
+}
+
+/**
+ * Tutor's lesson/course attachments (`_tutor_attachments`, an array of
+ * attachment IDs). Core drops any non-scalar entry.
+ *
+ * @param WP_Post $post Course or lesson post.
+ * @return array<int,mixed>
+ */
+function vfaudit_tutor_attachment_ids( $post ): array {
+	$ids = get_post_meta( (int) $post->ID, '_tutor_attachments', true );
+	return is_array( $ids ) ? $ids : array();
 }

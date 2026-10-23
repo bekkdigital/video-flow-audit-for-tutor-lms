@@ -43,7 +43,7 @@ function vfaudit_render_dormant_notice(): void {
 	}
 	echo '<div class="notice notice-info is-dismissible"><p>';
 	echo esc_html__(
-		'Video Flow for Tutor LMS is active — it already includes the video audit view. You can safely deactivate Video Flow Audit for Tutor LMS.',
+		'Video Flow for Tutor LMS is active — it already includes the course media audit view. You can safely deactivate Video Flow Audit for Tutor LMS.',
 		'video-flow-audit-for-tutor-lms'
 	);
 	echo '</p></div>';
